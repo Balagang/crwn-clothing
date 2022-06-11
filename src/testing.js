@@ -25,3 +25,22 @@ const me = new Person('bank', 'lastbank', 33, ['Learning', 'Studying'])
 // me.lastname = 'LastChange'
 me.setName('FIRSTNAME LASTNAME')
 console.log(me.getBio())
+
+
+const myFunction = (msg) => {
+    const message = 'this is text'
+    const printMessage = (msg) => {
+        msg = 'CHANGE'
+        console.log(msg)
+    }
+    return printMessage
+}
+
+const myPrintMessage = myFunction()
+myPrintMessage((txt) => {
+    if(txt) {
+        console.log(txt)
+    } else {
+        console.log('error')
+    }
+})
