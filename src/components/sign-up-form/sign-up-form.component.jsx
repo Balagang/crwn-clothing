@@ -1,10 +1,11 @@
-// import { async } from "@firebase/util"
 import { useState } from "react"
 
 import FormInput from "../form-input/form-input.component"
 import Button from "../button/button.component"
 
-import { createAuthUserWithEmailAndPassword, createUserDocumentFromAuth } from "../../utils/firebase/firebase.utils"
+import { createAuthUserWithEmailAndPassword, 
+    createUserDocumentFromAuth 
+} from "../../utils/firebase/firebase.utils"
 
 import './sign-up-form.styles.scss'
 
@@ -19,8 +20,6 @@ const SignUpForm = () => {
     const [formFields, setFormFields] = useState(defaultFormFields)
     const { displayName, email, password, confirmPassword } = formFields
 
-    console.log(formFields)
-
     const resetFormFields = () => {
         setFormFields(defaultFormFields)
     }
@@ -34,14 +33,13 @@ const SignUpForm = () => {
         }
 
         try {
-            const { user } = await createAuthUserWithEmailAndPassword(email, password)
-    
+            const { user } = await createAuthUserWithEmailAndPassword(
+                email, 
+                password
+            )    
             await createUserDocumentFromAuth(user, { displayName })
             resetFormFields()
-        }
-
-
-        catch(error) {
+        }catch(error) {
             if (error.code == 'auth/email-already-in-use') {
                 alert('Cannot create user email already in-use')
             }
@@ -52,14 +50,12 @@ const SignUpForm = () => {
     const handleChange = (event) => {
         const { name, value } = event.target
         // console.log(event.target.name)
-
         setFormFields({ ...formFields, [name]: value })
-
     }
 
     return (
         <div className="sign-up-container">
-            <h2>Don't hand an account?</h2>
+            <h2>Don't have an account?</h2>
             <span>Sign up with your email and password</span>
             <form onSubmit={handleSubmit}>
                 <FormInput label='Display Name' type="text" required onChange={handleChange} name={'displayName'} value={displayName} />                
