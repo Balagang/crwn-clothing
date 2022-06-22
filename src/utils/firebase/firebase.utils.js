@@ -9,7 +9,16 @@ import {
     signOut,
     onAuthStateChanged
 } from 'firebase/auth'
-import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore'
+import { 
+    getFirestore, 
+    doc, 
+    getDoc, 
+    setDoc, 
+    collection, 
+    writeBatch,
+    query,
+    getDocs,
+} from 'firebase/firestore'
 
 const firebaseConfig = {
     apiKey: "AIzaSyAlHX8yzO3DjZKB3rG0d1hlrGLOGwXke-Q",
@@ -35,16 +44,43 @@ export const signInWithGoogleRedirect = () => signInWithRedirect(auth, googlePro
 
 export const db = getFirestore()
 
+export const addCollectionAndDocuments = async (collectionKey, objectToAdd, field ) => {
+    const collectionRef = collection(db, collectionKey)
+    const batch = writeBatch(db)
+
+    objectToAdd.forEach((object) => {
+        const docRef = doc(collectionRef, object.title.toLowerCase())
+        batch.set(docRef, object)
+    })
+
+    await batch.commit()
+    console.log('done') 
+}
+
+export const getCategoriesAndDocuments = async () => {
+    const collectionRef = collection(db, 'categories')
+    const q = query(collectionRef)
+
+    const querySnapshot = await getDocs(q)
+    const categoryMap = querySnapshot.docs.reduce((acc, docSnapshot) => {
+        const { title, items } = docSnapshot.data()
+        acc[title.toLowerCase()] = items
+        return acc
+    }, {})
+
+    return categoryMap
+}
+
 export const createUserDocumentFromAuth = async (userAuth, additionalInformation = {}) => {
     if (!auth) {return}
 
     const userDocRef = doc(db, 'users', userAuth.uid)
 
-    console.log(userDocRef)
+    // console.log(userDocRef)
 
     const userSnapshot = await getDoc(userDocRef)
-    console.log(userSnapshot)
-    console.log(userSnapshot.exists())
+    // console.log(userSnapshot)
+    // console.log(userSnapshot.exists())
 
     //check if user data exist if it does then return user doc ref
 
